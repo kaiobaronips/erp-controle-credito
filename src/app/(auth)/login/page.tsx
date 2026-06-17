@@ -9,19 +9,24 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
+const USERNAME_MAP: Record<string, string> = {
+  admin: "admin@cambio.com",
+};
+
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    const email = USERNAME_MAP[username.toLowerCase()] ?? username;
     const res = await signIn.email({ email, password });
     setLoading(false);
     if (res.error) {
-      toast.error(res.error.message || "Credenciais inválidas");
+      toast.error("Usuário ou senha inválidos");
     } else {
       router.push("/overview");
     }
@@ -34,19 +39,19 @@ export default function LoginPage() {
           <div className="mb-2 flex justify-center">
             <Image src="/cash-logo.png" alt="cash" width={1070} height={454} priority className="h-12 w-auto" />
           </div>
-          <CardTitle className="text-2xl">ERP I Controle de Crédito</CardTitle>
-          <CardDescription>Controle de Operações</CardDescription>
+          <CardTitle className="text-2xl">Controle de Crédito</CardTitle>
+          <CardDescription>Gestão de Operações</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1">
-              <Label htmlFor="email">E-mail</Label>
+              <Label htmlFor="username">Usuário</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                type="text"
+                placeholder="admin"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>

@@ -198,7 +198,7 @@ export default function HistoricoCobrancasPage({
   );
 
   return (
-    <div className="flex h-[calc(100dvh-5.5rem)] flex-col gap-5 sm:h-[calc(100dvh-6.5rem)] md:h-[calc(100dvh-3rem)]">
+    <div className="flex flex-col gap-5 md:h-[calc(100dvh-3rem)]">
       <Link
         href="/emprestimos"
         className="inline-flex shrink-0 items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -303,8 +303,8 @@ export default function HistoricoCobrancasPage({
           </CardContent>
         </Card>
       ) : (
-        <Card className="flex min-h-0 flex-1 flex-col overflow-hidden py-0">
-          <CardContent className="min-h-0 flex-1 px-0 flex flex-col">
+        <Card className="flex flex-col overflow-hidden py-0 md:min-h-0 md:flex-1">
+          <CardContent className="flex flex-col px-0 md:min-h-0 md:flex-1">
             {/* Filtros mobile */}
             <div className="md:hidden flex items-center gap-2 border-b border-border px-4 py-2">
               <Select value={mesFiltro} onValueChange={(v: string | null) => setMesFiltro(v === "__all__" ? "" : v ?? "")}>
@@ -326,8 +326,8 @@ export default function HistoricoCobrancasPage({
                 </SelectContent>
               </Select>
             </div>
-            {/* Mobile: cards empilhados */}
-            <ul className="md:hidden flex-1 overflow-y-auto space-y-2.5 p-3">
+            {/* Mobile: cards empilhados — sem scroll interno, rola com a página */}
+            <ul className="space-y-2.5 p-3 md:hidden">
               {linhasFiltradas.length === 0 && (
                 <li className="py-10 text-center text-sm text-muted-foreground">Nenhuma competência neste filtro</li>
               )}
@@ -478,7 +478,7 @@ function HeaderField({
       </div>
       <div className="min-w-0">
         <p className="text-[11px] leading-4 font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
-        <p className="leading-5 font-medium tabular-nums text-foreground">{value}</p>
+        <p className="whitespace-nowrap text-[13px] leading-5 font-medium tabular-nums text-foreground sm:text-base">{value}</p>
       </div>
     </div>
   );
@@ -624,16 +624,20 @@ function ResumoCard({
   return (
     <Card className={`py-4 ${ring}`}>
       <CardContent className="px-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs font-medium text-muted-foreground">{label}</p>
-            <p className={`mt-1 text-xl font-bold tracking-tight tabular-nums ${valCls}`}>{value}</p>
-            {sub && <p className="mt-0.5 text-xs text-muted-foreground tabular-nums">{sub}</p>}
+        {/* Desktop (sm+): bloco de texto à esquerda + ícone à direita (layout original) */}
+        <div className="flex items-center justify-between gap-2 sm:items-start sm:gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium leading-snug text-muted-foreground">{label}</p>
+            <p className={`mt-1 hidden text-xl font-bold tracking-tight tabular-nums sm:block ${valCls}`}>{value}</p>
+            {sub && <p className="mt-0.5 hidden text-xs text-muted-foreground tabular-nums sm:block">{sub}</p>}
           </div>
           <div className={`grid size-8 shrink-0 place-items-center rounded-lg ${iconCls}`}>
             <Icon size={16} />
           </div>
         </div>
+        {/* Mobile: valor em linha cheia (não quebra) + sub abaixo */}
+        <p className={`mt-1 whitespace-nowrap text-[15px] font-bold tracking-tight tabular-nums sm:hidden ${valCls}`}>{value}</p>
+        {sub && <p className="mt-0.5 truncate text-xs text-muted-foreground tabular-nums sm:hidden">{sub}</p>}
       </CardContent>
     </Card>
   );

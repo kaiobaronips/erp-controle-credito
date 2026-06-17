@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-11T00:00:00Z",
+  "title": "Design System: Federal Credit Pay",
+  "extensions": {
+    "colorMeta": {
+      "electric-blue":       { "role": "primary",   "displayName": "Electric Blue",        "canonical": "oklch(0.55 0.24 254)", "tonalRamp": ["oklch(0.20 0.18 254)","oklch(0.30 0.20 254)","oklch(0.40 0.22 254)","oklch(0.55 0.24 254)","oklch(0.65 0.22 254)","oklch(0.75 0.18 254)","oklch(0.85 0.12 254)","oklch(0.95 0.04 254)"] },
+      "electric-blue-deep":  { "role": "primary",   "displayName": "Electric Blue Deep",   "canonical": "oklch(0.47 0.22 254)", "tonalRamp": ["oklch(0.18 0.16 254)","oklch(0.28 0.18 254)","oklch(0.37 0.20 254)","oklch(0.47 0.22 254)","oklch(0.57 0.20 254)","oklch(0.68 0.16 254)","oklch(0.80 0.10 254)","oklch(0.93 0.03 254)"] },
+      "electric-blue-subtle":{ "role": "primary",   "displayName": "Electric Blue Subtle", "canonical": "oklch(0.95 0.03 254)", "tonalRamp": ["oklch(0.92 0.03 254)","oklch(0.93 0.03 254)","oklch(0.94 0.03 254)","oklch(0.95 0.03 254)","oklch(0.96 0.02 254)","oklch(0.97 0.02 254)","oklch(0.98 0.01 254)","oklch(0.99 0.005 254)"] },
+      "emerald":             { "role": "secondary", "displayName": "Emerald",               "canonical": "oklch(0.65 0.19 155)", "tonalRamp": ["oklch(0.22 0.15 155)","oklch(0.32 0.17 155)","oklch(0.42 0.18 155)","oklch(0.52 0.19 155)","oklch(0.65 0.19 155)","oklch(0.76 0.15 155)","oklch(0.86 0.10 155)","oklch(0.95 0.04 155)"] },
+      "emerald-deep":        { "role": "secondary", "displayName": "Emerald Deep",          "canonical": "oklch(0.55 0.17 155)", "tonalRamp": ["oklch(0.18 0.13 155)","oklch(0.28 0.15 155)","oklch(0.38 0.16 155)","oklch(0.48 0.17 155)","oklch(0.55 0.17 155)","oklch(0.65 0.14 155)","oklch(0.77 0.09 155)","oklch(0.92 0.03 155)"] },
+      "destructive":         { "role": "tertiary",  "displayName": "Destructive Red",       "canonical": "oklch(0.50 0.22 27)",  "tonalRamp": ["oklch(0.20 0.18 27)","oklch(0.30 0.20 27)","oklch(0.40 0.21 27)","oklch(0.50 0.22 27)","oklch(0.60 0.20 27)","oklch(0.70 0.16 27)","oklch(0.82 0.10 27)","oklch(0.95 0.03 27)"] },
+      "warning":             { "role": "tertiary",  "displayName": "Warning Amber",         "canonical": "oklch(0.63 0.14 70)",  "tonalRamp": ["oklch(0.25 0.11 70)","oklch(0.35 0.12 70)","oklch(0.45 0.13 70)","oklch(0.55 0.14 70)","oklch(0.63 0.14 70)","oklch(0.73 0.11 70)","oklch(0.83 0.07 70)","oklch(0.95 0.03 70)"] },
+      "ink-primary-light":   { "role": "neutral",   "displayName": "Ink Primary (Light)",   "canonical": "oklch(0.13 0.01 254)", "tonalRamp": ["oklch(0.10 0.01 254)","oklch(0.13 0.01 254)","oklch(0.20 0.01 254)","oklch(0.35 0.01 254)","oklch(0.50 0.01 254)","oklch(0.65 0.01 254)","oklch(0.80 0.01 254)","oklch(0.95 0.005 254)"] },
+      "surface-base-dark":   { "role": "neutral",   "displayName": "Surface Base (Dark)",   "canonical": "oklch(0.13 0.01 254)", "tonalRamp": ["oklch(0.10 0.01 254)","oklch(0.13 0.01 254)","oklch(0.17 0.012 254)","oklch(0.21 0.010 254)","oklch(0.28 0.008 254)","oklch(0.40 0.006 254)","oklch(0.60 0.004 254)","oklch(0.85 0.002 254)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Título principal de cada módulo. Um por tela." },
+      "headline": { "displayName": "Headline", "purpose": "Títulos de card e seções dentro da página." },
+      "title": { "displayName": "Title", "purpose": "Rótulos de tabela, subtítulos de painel." },
+      "body": { "displayName": "Body", "purpose": "Texto corrido, descrições, observações. Máximo 65ch." },
+      "label": { "displayName": "Label", "purpose": "Badges, chips, cabeçalhos de coluna, metadados." },
+      "numeric": { "displayName": "Numeric", "purpose": "Exclusivo para valores monetários em stat cards e KPIs." }
+    },
+    "shadows": [
+      { "name": "shadow-hover",          "value": "0 4px 16px rgba(0, 0, 0, 0.12)",                          "valueDark": "0 4px 16px rgba(0, 0, 0, 0.40)",      "purpose": "Stat cards e linhas de tabela em hover — sinaliza interatividade." },
+      { "name": "shadow-dropdown",       "value": "0 8px 24px rgba(0, 0, 0, 0.16)",                          "valueDark": "0 8px 24px rgba(0, 0, 0, 0.50)",      "purpose": "Menus flutuantes, popovers, datepicker." },
+      { "name": "shadow-electric-focus", "value": "0 0 0 3px oklch(0.55 0.24 254 / 0.30)",                   "valueDark": "0 0 0 3px oklch(0.55 0.24 254 / 0.40)", "purpose": "Anel de foco em todos os elementos interativos." }
+    ],
+    "motion": [
+      { "name": "ease-out-fast",    "value": "cubic-bezier(0.0, 0.0, 0.2, 1)", "duration": "120ms", "purpose": "Hover de botão, estado de input focus." },
+      { "name": "ease-out-standard","value": "cubic-bezier(0.0, 0.0, 0.2, 1)", "duration": "200ms", "purpose": "Transições de estado de card, abertura de dropdown." },
+      { "name": "ease-out-enter",   "value": "cubic-bezier(0.0, 0.0, 0.2, 1)", "duration": "280ms", "purpose": "Entrada de modal, sheet, toast." }
+    ],
+    "breakpoints": [
+      { "name": "sm",  "value": "640px"  },
+      { "name": "md",  "value": "768px"  },
+      { "name": "lg",  "value": "1024px" },
+      { "name": "xl",  "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ação principal de cada tela — novo empréstimo, salvar credor, registrar pagamento.",
+      "html": "<button class=\"ds-btn-primary\">Novo Empréstimo</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 6px; background: #0070F3; color: #fff; padding: 8px 16px; border: none; border-radius: 8px; font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; line-height: 1.4; cursor: pointer; transition: background 120ms cubic-bezier(0,0,0.2,1); outline: none; } .ds-btn-primary:hover { background: #005ABF; } .ds-btn-primary:focus-visible { box-shadow: 0 0 0 3px oklch(0.55 0.24 254 / 0.30); } .ds-btn-primary:active { background: #004C9F; transform: translateY(1px); } .ds-btn-primary:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; } @media (prefers-reduced-motion: reduce) { .ds-btn-primary { transition: none; } }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Ação secundária, cancelar, voltar.",
+      "html": "<button class=\"ds-btn-ghost\">Cancelar</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: #0070F3; padding: 8px 16px; border: 1px solid #E6F0FF; border-radius: 8px; font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1.4; cursor: pointer; transition: background 120ms cubic-bezier(0,0,0.2,1), border-color 120ms; outline: none; } .ds-btn-ghost:hover { background: #E6F0FF; border-color: #0070F3; } .ds-btn-ghost:focus-visible { box-shadow: 0 0 0 3px oklch(0.55 0.24 254 / 0.30); }"
+    },
+    {
+      "name": "Stat Card",
+      "kind": "card",
+      "refersTo": "stat-card",
+      "description": "Bloco de KPI — valor monetário com rótulo e sub-valor. Componente mais recorrente do dashboard.",
+      "html": "<div class=\"ds-stat-card\"><div class=\"ds-stat-card__body\"><p class=\"ds-stat-card__label\">A Receber</p><p class=\"ds-stat-card__value\">R$ 184.200</p><p class=\"ds-stat-card__sub\">saldo devedor total</p></div><div class=\"ds-stat-card__icon ds-stat-card__icon--neutral\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"22 7 13.5 15.5 8.5 10.5 2 17\"/><polyline points=\"16 7 22 7 22 13\"/></svg></div></div>",
+      "css": ".ds-stat-card { display: flex; align-items: flex-start; justify-content: space-between; background: #fff; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; gap: 12px; transition: box-shadow 200ms cubic-bezier(0,0,0.2,1); } .ds-stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); } .ds-stat-card__label { font-family: Geist, system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; color: #57606A; margin: 0 0 4px; } .ds-stat-card__value { font-family: Geist, system-ui, sans-serif; font-size: 1.5rem; font-weight: 700; color: #0D1117; line-height: 1.1; letter-spacing: -0.025em; margin: 0 0 4px; } .ds-stat-card__sub { font-family: Geist, system-ui, sans-serif; font-size: 0.75rem; font-weight: 400; color: #57606A; margin: 0; } .ds-stat-card__icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; } .ds-stat-card__icon--neutral { background: #E6F0FF; color: #0070F3; } .ds-stat-card__icon--positive { background: #E6FAF3; color: #008A5B; } .ds-stat-card__icon--alert { background: #FFEEF0; color: #CF222E; } .ds-stat-card--alert { border-color: #F5B8BB; background: #FFEEF0; } .ds-stat-card--alert .ds-stat-card__value { color: #CF222E; }"
+    },
+    {
+      "name": "Status Badge — Active",
+      "kind": "chip",
+      "refersTo": "badge-active",
+      "description": "Credor ativo, empréstimo em dia, parcela paga.",
+      "html": "<span class=\"ds-badge ds-badge--active\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"20 6 9 17 4 12\"/></svg>Quitado</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-family: Geist, system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.4; } .ds-badge--active { background: #E6FAF3; color: #008A5B; } .ds-badge--overdue { background: #FFEEF0; color: #CF222E; } .ds-badge--warning { background: #FFF8E6; color: #E08000; } .ds-badge--neutral { background: #F6F8FF; color: #57606A; }"
+    },
+    {
+      "name": "Status Badge — Overdue",
+      "kind": "chip",
+      "refersTo": "badge-overdue",
+      "description": "Parcela atrasada, credor inadimplente.",
+      "html": "<span class=\"ds-badge ds-badge--overdue\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"12\" y1=\"8\" x2=\"12\" y2=\"12\"/><line x1=\"12\" y1=\"16\" x2=\"12.01\" y2=\"16\"/></svg>Atrasado</span>",
+      "css": ""
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de texto padrão — nome do credor, valor, observações.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field__label\" for=\"ds-input-demo\">Nome do Credor</label><input class=\"ds-input\" id=\"ds-input-demo\" type=\"text\" placeholder=\"Ex: João Silva\" /></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; } .ds-field__label { font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; color: #0D1117; line-height: 1.4; } .ds-input { background: #fff; color: #0D1117; border: 1px solid #E2E8F0; border-radius: 8px; padding: 8px 12px; font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 400; line-height: 1.6; outline: none; transition: border-color 120ms cubic-bezier(0,0,0.2,1), box-shadow 120ms; width: 100%; box-sizing: border-box; } .ds-input::placeholder { color: #8B949E; } .ds-input:focus { border-color: #0070F3; border-width: 2px; box-shadow: 0 0 0 3px oklch(0.55 0.24 254 / 0.30); padding: 7px 11px; } .ds-input:disabled { opacity: 0.5; background: #F6F8FF; cursor: not-allowed; } .ds-input--error { border-color: #CF222E; border-width: 2px; padding: 7px 11px; }"
+    },
+    {
+      "name": "Nav Sidebar Item",
+      "kind": "nav",
+      "refersTo": "button-ghost",
+      "description": "Item de navegação lateral — Dashboard, Credores, Empréstimos, Parcelas, Garantias, Fluxo.",
+      "html": "<nav class=\"ds-sidebar\"><a href=\"#\" class=\"ds-nav-item ds-nav-item--active\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\"/></svg>Dashboard</a><a href=\"#\" class=\"ds-nav-item\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg>Credores</a></nav>",
+      "css": ".ds-sidebar { display: flex; flex-direction: column; background: #F6F8FF; padding: 12px; gap: 2px; min-height: 100vh; width: 224px; } .ds-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; color: #57606A; text-decoration: none; transition: background 120ms, color 120ms; } .ds-nav-item:hover { background: #EEF2FF; color: #0D1117; } .ds-nav-item--active { background: #E6F0FF; color: #0070F3; font-weight: 600; } .ds-nav-item:focus-visible { box-shadow: 0 0 0 3px oklch(0.55 0.24 254 / 0.30); outline: none; }"
+    },
+    {
+      "name": "Alert Banner — Critical",
+      "kind": "custom",
+      "refersTo": "badge-overdue",
+      "description": "Alerta de parcelas atrasadas no topo do dashboard.",
+      "html": "<div class=\"ds-alert ds-alert--critical\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"flex-shrink:0;margin-top:1px\"><path d=\"M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z\"/><line x1=\"12\" y1=\"9\" x2=\"12\" y2=\"13\"/><line x1=\"12\" y1=\"17\" x2=\"12.01\" y2=\"17\"/></svg><div class=\"ds-alert__content\"><p class=\"ds-alert__title\">3 parcelas em atraso</p><p class=\"ds-alert__sub\">Total em aberto: R$ 12.400</p></div><span class=\"ds-badge ds-badge--overdue\" style=\"margin-left:auto;flex-shrink:0\">Urgente</span></div>",
+      "css": ".ds-alert { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 8px; border: 1px solid; } .ds-alert--critical { background: #FFEEF0; border-color: #F5B8BB; color: #CF222E; } .ds-alert--warning { background: #FFF8E6; border-color: #F5D68A; color: #E08000; } .ds-alert__content { flex: 1; } .ds-alert__title { font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; color: inherit; margin: 0 0 2px; } .ds-alert__sub { font-family: Geist, system-ui, sans-serif; font-size: 0.875rem; font-weight: 400; color: inherit; opacity: 0.85; margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Electric Ledger",
+    "overview": "Federal Credit Pay é a ferramenta de quem sabe o que está fazendo. Não é um app de consumidor que precisa seduzir — é um instrumento de precisão que precisa performar. O design carrega a seriedade de um livro-caixa financeiro com a energia de uma fintech moderna: azul elétrico como a única cor de ação, verde esmeralda como sinal de saúde financeira, e tudo o mais em neutros controlados que deixam os dados falarem.\n\nO sistema suporta dark mode como modo nativo de alta concentração e light mode como modo funcional para ambientes iluminados. Em ambos os temas, a hierarquia de informação é invariável: dado primário (valores) domina, dado secundário (rótulos) apoia, dado de apoio (timestamps, IDs) recua.",
+    "keyCharacteristics": [
+      "Densidade com hierarquia — muito dado sem sobrecarga",
+      "Cor semântica — azul para ações, verde para positivos, vermelho para alertas; nunca decorativo",
+      "Numerais em destaque — valores monetários são o protagonista em cada tela",
+      "Dual-theme sem compromisso — dark e light igualmente polidos",
+      "Zero ornamento — cada pixel justifica sua presença"
+    ],
+    "rules": [
+      { "name": "The Two-Accent Rule",         "body": "Blue e emerald são os únicos acentos do sistema. Roxo, amarelo-dourado, cyan não existem aqui. Adicionar um terceiro acento quebra a semântica dos dois primeiros.", "section": "colors" },
+      { "name": "The Semantic Lock Rule",       "body": "Emerald = positivo financeiro. Blue = ação/navegação. Vermelho = alerta/erro. Se um elemento não se encaixa, é neutro. Sem exceções.", "section": "colors" },
+      { "name": "The Number-First Rule",        "body": "Valores monetários usam o estilo numeric (700, 1.5rem). O rótulo acima usa label. O sub-valor abaixo usa label em ink-secondary. Essa tríade é invariável em stat cards.", "section": "typography" },
+      { "name": "The No-Uppercase Rule",        "body": "Nenhum texto em text-transform: uppercase exceto labels de status de uma palavra (ATIVO, ATRASADO, QUITADO) com letter-spacing positivo. Sem eyebrow labels genéricos em caps.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule",     "body": "Surfaces são planas em repouso. A sombra é resposta de estado, não decisão de layout. Se um elemento está sombreado sem interação, está errado.", "section": "elevation" }
+    ],
+    "dos": [
+      "Usar electric-blue exclusivamente para ações navegáveis e interativas.",
+      "Usar emerald exclusivamente para estados financeiros positivos.",
+      "Apresentar valores monetários com o estilo numeric (700, 1.5rem).",
+      "Acompanhar toda cor semântica de ícone ou rótulo textual (WCAG AA).",
+      "Usar prefers-reduced-motion em toda transição.",
+      "Manter shadow-electric-focus em todos os elementos interativos."
+    ],
+    "donts": [
+      "Não usar cream, sand, bege ou neutro warm-tinted como background.",
+      "Não colocar eyebrow labels em uppercase acima de seções.",
+      "Não usar emerald como cor de botão ou navegação.",
+      "Não criar cards com border-left colorido como acento de status.",
+      "Não usar gradient text (background-clip: text).",
+      "Não introduzir um terceiro acento (roxo, amarelo-ouro, cyan).",
+      "Não usar border-left maior que 1px como acento colorido em alerts."
+    ]
+  }
+}

@@ -161,18 +161,18 @@ function CobrancasInner() {
           tone="neutral"
         />
         <KpiCard
-          label="Vencidas"
-          value={String(vencidas.length)}
-          sub={formatCurrency(vencidas.reduce((s, r) => s + r.cobranca.valor, 0))}
-          icon={AlertTriangle}
-          tone={vencidas.length > 0 ? "alert" : "neutral"}
-        />
-        <KpiCard
           label="Recebido este mês"
           value={formatCurrency(recebidoMes)}
           sub="juros pagos no mês"
           icon={CheckCircle}
           tone="success"
+        />
+        <KpiCard
+          label="Vencidas"
+          value={String(vencidas.length)}
+          sub={formatCurrency(vencidas.reduce((s, r) => s + r.cobranca.valor, 0))}
+          icon={AlertTriangle}
+          tone={vencidas.length > 0 ? "alert" : "neutral"}
         />
       </div>
 

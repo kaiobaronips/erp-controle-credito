@@ -146,3 +146,89 @@
     color: var(--color-primary-foreground);
   }
 }
+
+/*
+ * ─── Brand system — animações e utilitários compartilhados ──────────
+ * Primitivos reutilizáveis da identidade (obsidian + spring green),
+ * extraídos da tela de login para uso consistente em todo o sistema.
+ */
+@keyframes brand-pulse-orb {
+  0%, 100% { transform: scale(1) translate(0, 0); }
+  50%      { transform: scale(1.12) translate(12px, -12px); }
+}
+@keyframes brand-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes brand-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes brand-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes brand-glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(168, 255, 83, 0); }
+  50%      { box-shadow: 0 0 24px 2px rgba(168, 255, 83, 0.16); }
+}
+
+@layer utilities {
+  /* Entrada suave (staggered via inline animation-delay) */
+  .brand-fade-up { animation: brand-fade-up 0.5s ease both; }
+
+  /* Eyebrow — rótulo verde em caixa alta (assinatura da marca) */
+  .brand-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-primary);
+  }
+
+  /* Cartão com vidro fosco */
+  .brand-glass {
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: color-mix(in oklch, var(--card) 80%, transparent);
+    backdrop-filter: blur(16px);
+  }
+
+  /* Linha de acento superior (gradiente verde) */
+  .brand-accent-top {
+    position: relative;
+  }
+  .brand-accent-top::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(168, 255, 83, 0.6), transparent);
+  }
+}
+
+/* Atmosfera de fundo — grid scanlines + orbs (atrás do conteúdo) */
+.brand-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.brand-backdrop__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image:
+    linear-gradient(rgba(168, 255, 83, 0.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 255, 83, 0.6) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.brand-backdrop__orb {
+  position: absolute;
+  border-radius: 9999px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-fade-up,
+  .brand-backdrop__orb { animation: none !important; }
+}

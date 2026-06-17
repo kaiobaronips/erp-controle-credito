@@ -1,10 +1,12 @@
 import { AppSidebar, AppTopbar, SidebarProvider } from "@/components/dashboard/app-sidebar";
+import { AppBackground } from "@/components/dashboard/app-background";
 import { AiChat } from "@/components/dashboard/ai-chat";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="flex h-screen flex-col overflow-hidden bg-background">
+      <AppBackground />
+      <div className="relative z-10 flex h-screen flex-col overflow-hidden">
         <AppTopbar />
         <div className="flex min-h-0 flex-1">
           <AppSidebar />

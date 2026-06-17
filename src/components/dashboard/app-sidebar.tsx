@@ -171,7 +171,7 @@ export function AppSidebar() {
   return (
     <aside
       className={cn(
-        "hidden shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-200 md:flex",
+        "hidden shrink-0 flex-col border-r border-sidebar-border bg-sidebar/70 text-sidebar-foreground backdrop-blur-xl transition-all duration-200 md:flex",
         collapsed ? "w-[52px]" : "w-56"
       )}
     >
@@ -187,7 +187,7 @@ export function AppTopbar() {
   const { collapsed, toggle } = useContext(SidebarCtx);
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/85 px-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/70 sm:px-6">
+    <header className="brand-accent-top sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sm:px-6">
       <div className="flex items-center gap-3">
         {/* Mobile hamburger */}
         <Sheet open={open} onOpenChange={setOpen}>

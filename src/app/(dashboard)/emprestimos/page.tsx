@@ -309,7 +309,8 @@ export default function EmprestimosPage() {
     <div className="flex h-[calc(100dvh-5.5rem)] flex-col gap-5 sm:h-[calc(100dvh-6.5rem)] md:h-[calc(100dvh-3rem)]">
       <div className="flex shrink-0 items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold tracking-tight text-foreground">Empréstimos</h1>
+          <p className="brand-eyebrow">Operação</p>
+          <h1 className="font-heading text-xl font-bold tracking-tight text-card-foreground sm:text-2xl">Empréstimos</h1>
           <p className="text-sm text-muted-foreground">
             {emprestimos.length} no total · {vivos} ativo
           </p>

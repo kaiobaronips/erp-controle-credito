@@ -145,6 +145,12 @@ function CobrancasInner() {
 
   return (
     <div className="flex h-[calc(100dvh-5.5rem)] flex-col gap-5 sm:h-[calc(100dvh-6.5rem)] md:h-[calc(100dvh-3rem)]">
+      {/* Cabeçalho */}
+      <div className="brand-fade-up shrink-0 space-y-0.5">
+        <p className="brand-eyebrow">Operação</p>
+        <h1 className="font-heading text-xl font-bold tracking-tight text-card-foreground sm:text-2xl">Cobranças</h1>
+      </div>
+
       {/* KPIs de resumo */}
       <div className="grid shrink-0 grid-cols-1 gap-4 sm:grid-cols-3">
         <KpiCard

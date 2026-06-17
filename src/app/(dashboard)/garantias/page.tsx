@@ -341,7 +341,8 @@ export default function GarantiasPage() {
     <div className="flex h-[calc(100dvh-5.5rem)] flex-col gap-6 sm:h-[calc(100dvh-6.5rem)] md:h-[calc(100dvh-3rem)]">
       <div className="flex shrink-0 items-start justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold tracking-tight text-foreground">Garantias</h1>
+          <p className="brand-eyebrow">Financeiro</p>
+          <h1 className="font-heading text-xl font-bold tracking-tight text-card-foreground sm:text-2xl">Garantias</h1>
         </div>
         <Button onClick={() => { setEditing(null); setOpen(true); }}>
           <Plus size={16} className="mr-2" /> Garantia

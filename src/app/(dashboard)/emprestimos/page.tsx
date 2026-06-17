@@ -306,7 +306,7 @@ export default function EmprestimosPage() {
     });
 
   return (
-    <div className="flex h-[calc(100dvh-5.5rem)] flex-col gap-5 sm:h-[calc(100dvh-6.5rem)] md:h-[calc(100dvh-3rem)]">
+    <div className="flex flex-col gap-5 md:h-[calc(100dvh-3rem)]">
       <div className="flex shrink-0 items-center justify-between gap-3">
         <div>
           <p className="brand-eyebrow">Operação</p>
@@ -360,10 +360,10 @@ export default function EmprestimosPage() {
         </span>
       </div>
 
-      <Card className="flex min-h-0 flex-1 flex-col overflow-hidden py-0">
-        <CardContent className="min-h-0 flex-1 px-0 flex flex-col">
-          {/* Mobile: cards empilhados (10 colunas não cabem em tela pequena) */}
-          <ul className="md:hidden flex-1 overflow-y-auto space-y-2.5 p-3">
+      <Card className="flex flex-col overflow-hidden py-0 md:min-h-0 md:flex-1">
+        <CardContent className="flex flex-col px-0 md:min-h-0 md:flex-1">
+          {/* Mobile: cards empilhados — sem scroll interno, rola com a página */}
+          <ul className="space-y-2.5 p-3 md:hidden">
             {filtered.length === 0 && (
               <li className="py-16 text-center text-sm text-muted-foreground">
                 {emprestimos.length === 0 ? "Nenhum empréstimo cadastrado" : "Nenhum empréstimo neste filtro"}

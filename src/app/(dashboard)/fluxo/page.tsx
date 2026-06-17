@@ -118,7 +118,7 @@ function KpiCard({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs font-medium text-muted-foreground">{label}</p>
-            <p className={`mt-1.5 text-lg sm:text-2xl font-bold tracking-tight tabular-nums break-all ${valueCls}`}>{value}</p>
+            <p className={`mt-1.5 whitespace-nowrap text-xl sm:text-2xl font-bold tracking-tight tabular-nums ${valueCls}`}>{value}</p>
             {sub && <p className="mt-1 truncate text-xs text-muted-foreground tabular-nums">{sub}</p>}
           </div>
           <div className={`grid size-9 shrink-0 place-items-center rounded-lg ${iconCls}`}>
@@ -301,7 +301,7 @@ export default function FluxoPage() {
     });
 
   return (
-    <div className="flex h-[calc(100dvh-5.5rem)] flex-col gap-6 sm:h-[calc(100dvh-6.5rem)] md:h-[calc(100dvh-3rem)]">
+    <div className="flex flex-col gap-6 lg:h-[calc(100dvh-3rem)]">
       <div className="flex shrink-0 items-center justify-between gap-3">
         <div>
           <p className="brand-eyebrow">Financeiro</p>
@@ -344,8 +344,8 @@ export default function FluxoPage() {
         />
       </div>
 
-      <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.25fr)]">
-        <div className="flex min-h-0 flex-col gap-5">
+      <div className="grid gap-5 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.25fr)]">
+        <div className="flex flex-col gap-5 lg:min-h-0">
           <Card className="shrink-0 py-4">
             <CardContent className="px-4">
               <div className="mb-3 flex items-center justify-between gap-2">
@@ -390,7 +390,7 @@ export default function FluxoPage() {
             </CardContent>
           </Card>
 
-          <Card className="min-h-0 flex-1 py-4">
+          <Card className="py-4 lg:min-h-0 lg:flex-1">
             <CardContent className="px-4">
               <div className="space-y-2">
                 <Label>Mês</Label>
@@ -412,10 +412,10 @@ export default function FluxoPage() {
           </Card>
         </div>
 
-        <Card className="flex min-h-0 flex-col overflow-hidden py-0">
-          <CardContent className="min-h-0 flex-1 px-0 flex flex-col">
-            {/* Mobile: cards empilhados */}
-            <ul className="md:hidden flex-1 overflow-y-auto space-y-2.5 p-3">
+        <Card className="flex flex-col overflow-hidden py-0 lg:min-h-0">
+          <CardContent className="flex flex-col px-0 lg:min-h-0 lg:flex-1">
+            {/* Mobile: cards empilhados — sem scroll interno, rola com a página */}
+            <ul className="space-y-2.5 p-3 md:hidden">
               {filtered.length === 0 && (
                 <li className="py-16 text-center text-sm text-muted-foreground">Nenhum lançamento encontrado</li>
               )}
@@ -439,9 +439,9 @@ export default function FluxoPage() {
                 );
               })}
             </ul>
-            {/* Desktop */}
-            <div className="hidden md:flex min-h-0 flex-1 flex-col">
-              <Table containerClassName="h-full overflow-y-auto">
+            {/* Desktop / tablet: tabela */}
+            <div className="hidden flex-col md:flex lg:min-h-0 lg:flex-1">
+              <Table containerClassName="lg:h-full lg:overflow-y-auto">
                 <TableHeader className="sticky top-0 z-20 bg-card/95 backdrop-blur">
                   <TableRow className="border-b hover:bg-transparent">
                     <TableHead className="pl-4 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">Tipo</TableHead>

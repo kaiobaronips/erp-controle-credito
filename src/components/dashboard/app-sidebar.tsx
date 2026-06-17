@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useContext, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
@@ -65,9 +66,14 @@ const sections = [
 /* ─── Logo ─────────────────────────────────────────────────────── */
 function LogoMark() {
   return (
-    <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary">
-      <span className="text-lg font-bold leading-none tracking-tighter text-primary-foreground">E</span>
-    </div>
+    <Image
+      src="/cash-logo.png"
+      alt="cash"
+      width={1070}
+      height={454}
+      priority
+      className="h-7 w-auto shrink-0"
+    />
   );
 }
 

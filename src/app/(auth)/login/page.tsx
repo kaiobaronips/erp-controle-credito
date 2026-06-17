@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { signIn } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,8 +31,10 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/50">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
-          <div className="text-3xl font-bold text-primary mb-1">💰</div>
-          <CardTitle className="text-2xl">Federal Credit Pay</CardTitle>
+          <div className="mb-2 flex justify-center">
+            <Image src="/cash-logo.png" alt="cash" width={1070} height={454} priority className="h-12 w-auto" />
+          </div>
+          <CardTitle className="text-2xl">ERP I Controle de Crédito</CardTitle>
           <CardDescription>Controle de Operações</CardDescription>
         </CardHeader>
         <CardContent>

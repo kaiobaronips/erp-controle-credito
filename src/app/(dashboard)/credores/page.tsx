@@ -113,20 +113,26 @@ function KpiCard({
         ? "bg-warning/10 text-warning"
         : "bg-primary/10 text-primary";
   return (
-    <Card className="py-5">
-      <CardContent className="px-5">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs font-medium text-muted-foreground">{label}</p>
-            <p className="mt-1.5 text-lg sm:text-2xl font-bold tracking-tight tabular-nums text-foreground break-all">
+    <Card className="py-3.5 sm:py-5">
+      <CardContent className="px-3 sm:px-5">
+        {/* Desktop (sm+): bloco de texto à esquerda + ícone à direita (layout original) */}
+        <div className="flex items-center justify-between gap-2 sm:items-start sm:gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs font-medium text-muted-foreground">{label}</p>
+            <p className="mt-1.5 hidden text-2xl font-bold tracking-tight tabular-nums text-foreground sm:block">
               {value}
             </p>
-            {sub && <p className="mt-1 truncate text-xs text-muted-foreground tabular-nums">{sub}</p>}
+            {sub && <p className="mt-1 hidden truncate text-xs text-muted-foreground tabular-nums sm:block">{sub}</p>}
           </div>
-          <div className={`grid size-9 shrink-0 place-items-center rounded-lg ${iconCls}`}>
+          <div className={`grid size-8 shrink-0 place-items-center rounded-lg sm:size-9 ${iconCls}`}>
             <Icon size={18} strokeWidth={2} />
           </div>
         </div>
+        {/* Mobile: valor em linha cheia (não quebra) + sub abaixo */}
+        <p className="mt-1.5 whitespace-nowrap text-[15px] font-bold tracking-tight tabular-nums text-foreground sm:hidden">
+          {value}
+        </p>
+        {sub && <p className="mt-0.5 truncate text-xs text-muted-foreground tabular-nums sm:hidden">{sub}</p>}
       </CardContent>
     </Card>
   );
@@ -304,7 +310,7 @@ export default function CredoresPage() {
   ];
 
   return (
-    <div className="flex h-[calc(100dvh-5.5rem)] flex-col gap-6 sm:h-[calc(100dvh-6.5rem)] md:h-[calc(100dvh-3rem)]">
+    <div className="flex flex-col gap-6 md:h-[calc(100dvh-3rem)]">
       <div className="flex shrink-0 items-start justify-between gap-3">
         <div>
           <p className="brand-eyebrow">Operação</p>
@@ -327,7 +333,7 @@ export default function CredoresPage() {
         </Dialog>
       </div>
 
-      <div className="grid shrink-0 grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid shrink-0 grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
         <KpiCard label="Total de credores" value={String(totalCredores)} sub="cadastrados" icon={Users} />
         <KpiCard label="Ativos" value={String(ativos)} sub="empréstimo em aberto" icon={Users} tone="success" />
         <KpiCard label="Valor emprestado" value={formatCurrency(valorEmprestado)} sub="principal total" icon={Banknote} />
@@ -354,10 +360,10 @@ export default function CredoresPage() {
         </div>
       </div>
 
-      <Card className="flex min-h-0 flex-1 flex-col overflow-hidden py-0">
-        <CardContent className="min-h-0 flex-1 px-0 flex flex-col">
-          {/* Mobile: cards empilhados */}
-          <ul className="md:hidden flex-1 overflow-y-auto space-y-2.5 p-3">
+      <Card className="flex flex-col overflow-hidden py-0 md:min-h-0 md:flex-1">
+        <CardContent className="flex flex-col px-0 md:min-h-0 md:flex-1">
+          {/* Mobile: cards empilhados — sem scroll interno, rola com a página */}
+          <ul className="space-y-2.5 p-3 md:hidden">
             {filtered.length === 0 && (
               <li className="py-16 text-center text-sm text-muted-foreground">Nenhum credor encontrado</li>
             )}

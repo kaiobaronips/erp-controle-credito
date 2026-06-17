@@ -144,7 +144,7 @@ function CobrancasInner() {
     .sort((a, b) => b.cobranca.vencimento.localeCompare(a.cobranca.vencimento));
 
   return (
-    <div className="flex h-[calc(100dvh-5.5rem)] flex-col gap-5 sm:h-[calc(100dvh-6.5rem)] md:h-[calc(100dvh-3rem)]">
+    <div className="flex flex-col gap-5 md:h-[calc(100dvh-3rem)]">
       {/* Cabeçalho */}
       <div className="brand-fade-up shrink-0 space-y-0.5">
         <p className="brand-eyebrow">Operação</p>
@@ -208,8 +208,63 @@ function CobrancasInner() {
       </div>
 
       {/* Tabela */}
-      <Card className="flex min-h-0 flex-1 flex-col overflow-hidden py-0">
-        <CardContent className="min-h-0 flex-1 px-0">
+      <Card className="flex flex-col overflow-hidden py-0 md:min-h-0 md:flex-1">
+        <CardContent className="flex flex-col px-0 md:min-h-0 md:flex-1">
+          {/* Mobile: cards empilhados — sem scroll interno, rola com a página */}
+          <ul className="space-y-2.5 p-3 md:hidden">
+            {loading && (
+              <li className="py-10 text-center text-sm text-muted-foreground">Carregando…</li>
+            )}
+            {!loading && filtered.length === 0 && (
+              <li className="py-10 text-center text-sm text-muted-foreground">Nenhuma cobrança neste filtro</li>
+            )}
+            {filtered.map(({ cobranca: c, credor }) => {
+              const atrasado = c.status === "atrasado";
+              const pago = c.status === "pago";
+              const accent = pago ? "bg-success" : atrasado ? "bg-destructive" : "bg-warning";
+              const badgeCls = pago
+                ? "bg-success/10 text-success"
+                : atrasado
+                  ? "bg-destructive/10 text-destructive"
+                  : "bg-warning/10 text-warning";
+              const badgeLabel = pago ? "Pago" : atrasado ? "Atrasado" : "Pendente";
+              return (
+                <li key={c.id} className="relative overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm">
+                  <span className={`absolute inset-y-0 left-0 w-1 ${accent}`} />
+                  <div className="p-3.5 pl-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[15px] font-bold leading-tight text-foreground">{credor?.nome ?? "—"}</p>
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                          <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${badgeCls}`}>
+                            {pago ? <CheckCircle size={11} /> : atrasado ? <AlertTriangle size={11} /> : <Clock size={11} />}
+                            {badgeLabel}
+                          </span>
+                          <span className="text-[11px] capitalize text-muted-foreground tabular-nums">{compLabel(c.competencia)}</span>
+                        </div>
+                      </div>
+                      <Money value={c.valor} className="shrink-0 text-[15px] font-bold text-foreground" />
+                    </div>
+                    <div className="mt-3 flex items-center justify-between gap-2 rounded-lg bg-muted/30 px-2.5 py-2">
+                      <span className="text-[11px] text-muted-foreground tabular-nums">vence {formatDate(c.vencimento)}</span>
+                      {pago ? (
+                        <span className="text-[11px] font-medium text-success tabular-nums">
+                          {c.dataPagamento ? `pago ${formatDate(c.dataPagamento)}` : "pago"}
+                        </span>
+                      ) : (
+                        <Button size="sm" variant="outline" className="h-7" disabled={paying === c.id} onClick={() => registrarPagamento(c.id)}>
+                          <Check size={12} className="mr-1" />
+                          {paying === c.id ? "..." : "Pagar"}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          {/* Desktop: tabela */}
+          <div className="hidden min-h-0 flex-1 flex-col md:flex">
           <Table containerClassName="h-full overflow-y-auto">
             <TableHeader className="sticky top-0 z-20 bg-card/95 backdrop-blur">
               <TableRow className="border-b hover:bg-transparent">
@@ -282,6 +337,7 @@ function CobrancasInner() {
               })}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

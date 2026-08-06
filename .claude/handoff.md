@@ -161,6 +161,28 @@ Replicado o design language do `~/Desktop/tallent-intelligence-crm--dashboard-ve
 
 ---
 
+## Sessão L — PDF real do credor (substitui o window.print) — 2026-08-06
+
+**Pedido:** o botão [PDF] da conta do credor abria o diálogo de impressão e saía um print da tela; o usuário queria um **arquivo** com todas as informações do credor. **Escopo escolhido por ele: relatório CONSOLIDADO** (todos os empréstimos do credor, não só o da tela).
+
+- **Nova rota `GET /api/credores/[id]/relatorio`** — dossiê: credor + todos os empréstimos, cada um com garantia, cronograma e devoluções. Roda `sincronizarCobrancas()` antes. Busca cobranças/devoluções da carteira em **2 queries com `inArray`** (não 2 por empréstimo) — cada query libSQL é um round-trip HTTP no Turso.
+- **Novo `src/lib/relatorio-credor-pdf.ts`** (jspdf 4.2.1 + jspdf-autotable 5.0.8): cabeçalho na marca cash, dados cadastrais, resumo geral e um bloco por empréstimo com indicadores + extrato mês a mês (devoluções intercaladas por data, status colorido, total no rodapé), paginação.
+- **`construirRelatorioCredorPDF()` devolve o jsPDF; `gerarRelatorioCredorPDF()` só chama `.save()`.** Essa separação é o que permite renderizar o PDF em Node e conferir o layout — foi assim que achei 4 bugs (total repetindo em toda página → `showFoot:"lastPage"`; coluna Valor desproporcional → larguras fixas somando os 182mm úteis; nome/endereço/garantia truncados → campos quebram em até 3 linhas com altura variável; nome do header encolhe a fonte em vez de cortar).
+- Gerador entra por **`import()` dinâmico** (jspdf ~350KB fora do bundle da rota).
+- **Removidos** o componente `PrintReport` e o bloco `@media print` de 217 linhas do `globals.css` (existiam só para o `window.print()`).
+
+### Pitfalls desta fase
+- **`STATUS_EMPRESTIMO` de `finance.ts` está DEFASADO**: tem 3 status, o banco usa 5 (`ativo`, `devedor`, `executado` — além de `parcial`/`quitado`). Os rótulos canônicos estão em `STATUS_META` de `(dashboard)/emprestimos/page.tsx` (`devedor` = "Pendente"). O PDF replica esse mapa localmente; **não corrigi o finance.ts** por ser usado em outros pontos.
+- **Nenhum empréstimo do banco local tem garantia vinculada** e nenhum credor tem >1 empréstimo → esses caminhos do PDF só foram validados com payload sintético.
+- Revisão de segurança automática apontou **IDOR** na rota nova. **Não é explorável**: app single-tenant (1 usuário; signup fechado por hook em `auth.ts`; nenhuma tabela de domínio tem coluna de owner; `session.user` não aparece em nenhuma rota). Se um dia entrar 2º usuário, tenancy vira item próprio — o problema é de TODAS as rotas, não dessa.
+- Loop de espera do deploy em zsh: **`status` é variável read-only** — usar outro nome.
+
+**Deployado:** commit `6584302` na `main`, deploy automático Vercel Ready, https://erp-controle-credito.vercel.app no ar (rota nova responde 401 sem sessão, provando que subiu). `tsc`✓ `eslint`✓ (só `set-state-in-effect` pré-existente do login) `next build` 0 erros.
+
+**Não commitado:** `outputs/controle-credito-em-aberto/build_planilha_em_aberto.py` (untracked, de outra frente).
+
+---
+
 ## Estado atual
 
 ### Concluído nesta sessão

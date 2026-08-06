@@ -2,7 +2,7 @@
 
 Dashboard de gestão de crédito e empréstimos para operações financeiras internas. Controla credores, empréstimos ativos, cobranças, garantias e fluxo de caixa em um único painel operacional.
 
-🌐 **Produção:** https://erp-controle-credito.vercel.app
+🌐 **Produção:** https://cash-controle-credito.vercel.app (apelido: https://erp-controle-credito.vercel.app)
 
 > Marca **cash**. Fintech operacional de alta performance — densa em informação, limpa na hierarquia, rápida na resposta. Dark-first.
 
@@ -141,19 +141,22 @@ Produção usa um banco **Turso cloud** (não o arquivo local). O deploy é auto
 |----------|-------|
 | `TURSO_DATABASE_URL` | URL libsql do banco Turso (`libsql://...turso.io`) |
 | `TURSO_AUTH_TOKEN` | Token gerado por `turso db tokens create <db>` |
-| `BETTER_AUTH_URL` | `https://erp-controle-credito.vercel.app` |
-| `NEXT_PUBLIC_APP_URL` | `https://erp-controle-credito.vercel.app` |
+| `BETTER_AUTH_URL` | `https://cash-controle-credito.vercel.app` |
+| `NEXT_PUBLIC_APP_URL` | `https://cash-controle-credito.vercel.app` |
+| `AUTH_EXTRA_ORIGINS` | `https://erp-controle-credito.vercel.app` (demais domínios, separados por vírgula) |
 | `BETTER_AUTH_SECRET` | string aleatória forte |
 | `SETUP_TOKEN` | token da rota de setup |
 | `ANTHROPIC_API_KEY` | chave da API Anthropic (widget de IA) |
 
 > ⚠️ **Pitfall do Vercel CLI:** ao adicionar variáveis em modo não-interativo, use sempre a flag `--value '...' --yes`. O `vercel env add` via stdin/pipe grava valor **vazio**. Variáveis de produção são `sensitive` por padrão (não aparecem no `vercel env pull`).
 
+> ⚠️ **Dois domínios, um projeto.** O mesmo projeto Vercel responde por `cash-controle-credito.vercel.app` (oficial) e `erp-controle-credito.vercel.app` (apelido). O Better Auth rejeita com **403 `INVALID_ORIGIN`** qualquer origem fora de `trustedOrigins`, então **todo domínio novo que sirva o app precisa entrar em `AUTH_EXTRA_ORIGINS`** — senão a tela de login abre normalmente mas o botão Entrar falha só naquele domínio.
+
 ### Deploy manual
 ```bash
 vercel --prod --yes
 # depois apontar o domínio para o novo deployment:
-vercel alias set <deployment-url> erp-controle-credito.vercel.app
+vercel alias set <deployment-url> cash-controle-credito.vercel.app
 ```
 
 ---

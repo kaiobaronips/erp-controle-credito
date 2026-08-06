@@ -51,7 +51,7 @@ import {
   CalendarDays,
   Percent,
   Receipt,
-  Printer,
+  FileDown,
 } from "lucide-react";
 
 interface Cob {
@@ -107,6 +107,7 @@ export default function HistoricoCobrancasPage({
   const [editOpen, setEditOpen] = useState(false);
   const [mesFiltro, setMesFiltro] = useState<string>("");
   const [anoFiltro, setAnoFiltro] = useState<string>("");
+  const [gerandoPdf, setGerandoPdf] = useState(false);
 
   const load = useCallback(async () => {
     const d: Payload = await fetch(`/api/emprestimos/${id}`).then((r) => r.json());
@@ -128,6 +129,26 @@ export default function HistoricoCobrancasPage({
       active = false;
     };
   }, [id]);
+
+  /**
+   * Baixa o dossiê consolidado do credor (todos os empréstimos) como PDF.
+   * O gerador é carregado sob demanda para não somar jspdf ao bundle da rota.
+   */
+  async function baixarPdf(credorId: number) {
+    setGerandoPdf(true);
+    try {
+      const res = await fetch(`/api/credores/${credorId}/relatorio`);
+      if (!res.ok) throw new Error("falha ao carregar relatório");
+      const dados = await res.json();
+      const { gerarRelatorioCredorPDF } = await import("@/lib/relatorio-credor-pdf");
+      gerarRelatorioCredorPDF(dados);
+      toast.success("Relatório gerado");
+    } catch {
+      toast.error("Não foi possível gerar o relatório");
+    } finally {
+      setGerandoPdf(false);
+    }
+  }
 
   async function toggle(c: Cob) {
     setBusy(c.id);
@@ -196,257 +217,264 @@ export default function HistoricoCobrancasPage({
       (!mesFiltro || l.competencia.slice(5, 7) === mesFiltro) &&
       (!anoFiltro || l.competencia.slice(0, 4) === anoFiltro)
   );
-
   return (
-    <div className="flex flex-col gap-5 md:h-[calc(100dvh-3rem)]">
-      <Link
-        href="/emprestimos"
-        className="inline-flex shrink-0 items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft size={15} /> Empréstimos
-      </Link>
+    <>
+      <div className="flex flex-col gap-5 md:h-[calc(100dvh-3rem)]">
+        <Link
+          href="/emprestimos"
+          className="inline-flex shrink-0 items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft size={15} /> Empréstimos
+        </Link>
 
-      {/* Header completo do credor */}
-      <Card className="shrink-0 py-4">
-        <CardContent className="px-5">
-          <div className="flex items-center justify-between gap-3">
-            <h1 className="text-lg font-semibold tracking-tight text-foreground">
-              {credor?.nome ?? "—"}
-            </h1>
-            <div className="flex shrink-0 items-center gap-2 print:hidden">
-              <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
-                <Pencil size={13} className="mr-1.5" /> Editar
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => window.print()}>
-                <Printer size={13} className="mr-1.5" /> PDF
-              </Button>
+        {/* Header completo do credor */}
+        <Card className="shrink-0 py-4">
+          <CardContent className="px-5">
+            <div className="flex items-center justify-between gap-3">
+              <h1 className="text-lg font-semibold tracking-tight text-foreground">
+                {credor?.nome ?? "—"}
+              </h1>
+              <div className="flex shrink-0 items-center gap-2 print:hidden">
+                <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
+                  <Pencil size={13} className="mr-1.5" /> Editar
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={!credor || gerandoPdf}
+                  onClick={() => credor && baixarPdf(credor.id)}
+                >
+                  <FileDown size={13} className="mr-1.5" />
+                  {gerandoPdf ? "Gerando…" : "PDF"}
+                </Button>
+              </div>
             </div>
-          </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <HeaderField
-              icon={Banknote}
-              label="Valor emprestado"
-              value={e ? formatCurrency(e.valorPrincipal) : "—"}
-            />
-            <HeaderField
-              icon={CalendarDays}
-              label="Data de início"
-              value={e?.dataInicio ? formatDate(e.dataInicio) : "—"}
-            />
-            <HeaderField
-              icon={Percent}
-              label="Juros"
-              value={e ? `${e.taxaJuros}% a.m.` : "—"}
-            />
-            <HeaderField
-              icon={Receipt}
-              label="Valor da parcela"
-              value={e ? formatCurrency(e.parcelaMensal) : "—"}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {e && (
-        <EditEmprestimoDialog
-          key={`${e.id}-${editOpen ? "open" : "closed"}-${e.valorPrincipal}-${e.taxaJuros}-${e.parcelaMensal}-${e.dataInicio ?? ""}`}
-          open={editOpen}
-          onOpenChange={setEditOpen}
-          emprestimo={e}
-          onSaved={() => {
-            setEditOpen(false);
-            load();
-          }}
-        />
-      )}
-
-      {/* Cards de resumo */}
-      <div className="grid shrink-0 grid-cols-2 gap-4 lg:grid-cols-4">
-        <ResumoCard
-          label="Crédito devolvido"
-          value={formatCurrency(creditoDevolvido)}
-          sub={`${devolucoes.length} devolução(ões)`}
-          icon={Undo2}
-          tone="success"
-        />
-        <ResumoCard
-          label="Total pago"
-          value={formatCurrency(totalPagoGeral)}
-          sub="parcelas + crédito"
-          icon={CheckCircle}
-          tone="success"
-        />
-        <ResumoCard
-          label="Juros pagos (juros mensal)"
-          value={formatCurrency(jurosPagos)}
-          sub={`${pagas.length} parcela(s)`}
-          icon={Percent}
-          tone="neutral"
-        />
-        <ResumoCard
-          label="Em aberto"
-          value={formatCurrency(totalAberto)}
-          sub={`${abertas.length} parcela(s)`}
-          icon={AlertTriangle}
-          tone="alert"
-        />
-      </div>
-
-      {/* Tabela mensal — uma linha por competência */}
-      {linhas.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center text-sm text-muted-foreground">
-            {e?.dataInicio
-              ? "Nenhuma competência gerada ainda."
-              : "Este empréstimo não tem data de início — defina-a para gerar o cronograma de cobranças."}
+            <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <HeaderField
+                icon={Banknote}
+                label="Valor emprestado"
+                value={e ? formatCurrency(e.valorPrincipal) : "—"}
+              />
+              <HeaderField
+                icon={CalendarDays}
+                label="Data de início"
+                value={e?.dataInicio ? formatDate(e.dataInicio) : "—"}
+              />
+              <HeaderField
+                icon={Percent}
+                label="Juros"
+                value={e ? `${e.taxaJuros}% a.m.` : "—"}
+              />
+              <HeaderField
+                icon={Receipt}
+                label="Valor da parcela"
+                value={e ? formatCurrency(e.parcelaMensal) : "—"}
+              />
+            </div>
           </CardContent>
         </Card>
-      ) : (
-        <Card className="flex flex-col overflow-hidden py-0 md:min-h-0 md:flex-1">
-          <CardContent className="flex flex-col px-0 md:min-h-0 md:flex-1">
-            {/* Filtros mobile */}
-            <div className="md:hidden flex items-center gap-2 border-b border-border px-4 py-2">
-              <Select value={mesFiltro} onValueChange={(v: string | null) => setMesFiltro(v === "__all__" ? "" : v ?? "")}>
-                <SelectTrigger size="sm" className="h-7 flex-1 border-border">
-                  <SelectValue placeholder="Mês" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__all__">Todos os meses</SelectItem>
-                  {MESES.map((m) => <SelectItem key={m.v} value={m.v}>{m.l}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              <Select value={anoFiltro} onValueChange={(v: string | null) => setAnoFiltro(v === "__all__" ? "" : v ?? "")}>
-                <SelectTrigger size="sm" className="h-7 w-[80px] border-border">
-                  <SelectValue placeholder="Ano" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__all__">Todos</SelectItem>
-                  {anos.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            {/* Mobile: cards empilhados — sem scroll interno, rola com a página */}
-            <ul className="space-y-2.5 p-3 md:hidden">
-              {linhasFiltradas.length === 0 && (
-                <li className="py-10 text-center text-sm text-muted-foreground">Nenhuma competência neste filtro</li>
-              )}
-              {linhasFiltradas.map((l) => {
-                const isDev = l.kind === "devolucao";
-                const accent = isDev ? "bg-primary" : l.status === "pago" ? "bg-success" : "bg-destructive";
-                return (
-                  <li key={l.key} className="relative overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm">
-                    <span className={`absolute inset-y-0 left-0 w-1 ${accent}`} />
-                    <div className="flex items-center justify-between gap-3 p-3.5 pl-4">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[15px] font-bold capitalize text-foreground">
-                          {isDev ? "Devolução" : mesNome(l.competencia)} {l.competencia.slice(0, 4)}
-                        </p>
-                        <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
-                          {l.vencimento && <span className="text-[11px] text-muted-foreground/60">vence {formatDate(l.vencimento)}</span>}
-                          {l.dataPagamento && <span className="text-[11px] text-muted-foreground/60">pago {formatDate(l.dataPagamento)}</span>}
+
+        {e && (
+          <EditEmprestimoDialog
+            key={`${e.id}-${editOpen ? "open" : "closed"}-${e.valorPrincipal}-${e.taxaJuros}-${e.parcelaMensal}-${e.dataInicio ?? ""}`}
+            open={editOpen}
+            onOpenChange={setEditOpen}
+            emprestimo={e}
+            onSaved={() => {
+              setEditOpen(false);
+              load();
+            }}
+          />
+        )}
+
+        {/* Cards de resumo */}
+        <div className="grid shrink-0 grid-cols-2 gap-4 lg:grid-cols-4">
+          <ResumoCard
+            label="Crédito devolvido"
+            value={formatCurrency(creditoDevolvido)}
+            sub={`${devolucoes.length} devolução(ões)`}
+            icon={Undo2}
+            tone="success"
+          />
+          <ResumoCard
+            label="Total pago"
+            value={formatCurrency(totalPagoGeral)}
+            sub="parcelas + crédito"
+            icon={CheckCircle}
+            tone="success"
+          />
+          <ResumoCard
+            label="Juros pagos (juros mensal)"
+            value={formatCurrency(jurosPagos)}
+            sub={`${pagas.length} parcela(s)`}
+            icon={Percent}
+            tone="neutral"
+          />
+          <ResumoCard
+            label="Em aberto"
+            value={formatCurrency(totalAberto)}
+            sub={`${abertas.length} parcela(s)`}
+            icon={AlertTriangle}
+            tone="alert"
+          />
+        </div>
+
+        {/* Tabela mensal — uma linha por competência */}
+        {linhas.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center text-sm text-muted-foreground">
+              {e?.dataInicio
+                ? "Nenhuma competência gerada ainda."
+                : "Este empréstimo não tem data de início — defina-a para gerar o cronograma de cobranças."}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="flex flex-col overflow-hidden py-0 md:min-h-0 md:flex-1">
+            <CardContent className="flex flex-col px-0 md:min-h-0 md:flex-1">
+              {/* Filtros mobile */}
+              <div className="md:hidden flex items-center gap-2 border-b border-border px-4 py-2">
+                <Select value={mesFiltro} onValueChange={(v: string | null) => setMesFiltro(v === "__all__" ? "" : v ?? "")}>
+                  <SelectTrigger size="sm" className="h-7 flex-1 border-border">
+                    <SelectValue placeholder="Mês" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__all__">Todos os meses</SelectItem>
+                    {MESES.map((m) => <SelectItem key={m.v} value={m.v}>{m.l}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Select value={anoFiltro} onValueChange={(v: string | null) => setAnoFiltro(v === "__all__" ? "" : v ?? "")}>
+                  <SelectTrigger size="sm" className="h-7 w-[80px] border-border">
+                    <SelectValue placeholder="Ano" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__all__">Todos</SelectItem>
+                    {anos.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              {/* Mobile: cards empilhados — sem scroll interno, rola com a página */}
+              <ul className="space-y-2.5 p-3 md:hidden">
+                {linhasFiltradas.length === 0 && (
+                  <li className="py-10 text-center text-sm text-muted-foreground">Nenhuma competência neste filtro</li>
+                )}
+                {linhasFiltradas.map((l) => {
+                  const isDev = l.kind === "devolucao";
+                  const accent = isDev ? "bg-primary" : l.status === "pago" ? "bg-success" : "bg-destructive";
+                  return (
+                    <li key={l.key} className="relative overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm">
+                      <span className={`absolute inset-y-0 left-0 w-1 ${accent}`} />
+                      <div className="flex items-center justify-between gap-3 p-3.5 pl-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[15px] font-bold capitalize text-foreground">
+                            {isDev ? "Devolução" : mesNome(l.competencia)} {l.competencia.slice(0, 4)}
+                          </p>
+                          <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
+                            {l.vencimento && <span className="text-[11px] text-muted-foreground/60">vence {formatDate(l.vencimento)}</span>}
+                            {l.dataPagamento && <span className="text-[11px] text-muted-foreground/60">pago {formatDate(l.dataPagamento)}</span>}
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-1.5 shrink-0">
-                        <Money value={l.valor} className="text-[15px] font-bold text-foreground" />
-                        {isDev ? (
-                          <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
-                            <Banknote size={11} /> Devolução
-                          </span>
-                        ) : (
-                          <button
-                            disabled={busy === l.cob!.id}
-                            onClick={() => toggle(l.cob!)}
-                            className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:opacity-50 ${
-                              l.status === "pago" ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"
-                            }`}
-                          >
-                            {l.status === "pago" ? <Check size={11} /> : <Undo2 size={11} className="rotate-180" />}
-                            {l.status === "pago" ? "Pago" : "Aberto"}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-            {/* Desktop: tabela */}
-            <div className="hidden md:flex min-h-0 flex-1 flex-col">
-              <Table containerClassName="h-full overflow-y-auto">
-                <TableHeader className="sticky top-0 z-20 bg-card/95 backdrop-blur">
-                  <TableRow className="border-b hover:bg-transparent">
-                    <TableHead className="w-[120px]">
-                      <Select value={mesFiltro} onValueChange={(v: string | null) => setMesFiltro(v === "__all__" ? "" : v ?? "")}>
-                        <SelectTrigger size="sm" className="h-7 w-[104px] border-0 px-1 font-medium shadow-none">
-                          <SelectValue placeholder="Mês" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="__all__">Todos os meses</SelectItem>
-                          {MESES.map((m) => <SelectItem key={m.v} value={m.v}>{m.l}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                    </TableHead>
-                    <TableHead className="w-[110px]">
-                      <Select value={anoFiltro} onValueChange={(v: string | null) => setAnoFiltro(v === "__all__" ? "" : v ?? "")}>
-                        <SelectTrigger size="sm" className="h-7 w-[94px] border-0 px-1 font-medium shadow-none">
-                          <SelectValue placeholder="Ano" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="__all__">Todos os anos</SelectItem>
-                          {anos.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                    </TableHead>
-                    <TableHead>Vencimento</TableHead>
-                    <TableHead>Data pagamento</TableHead>
-                    <TableHead className="text-right">Valor</TableHead>
-                    <TableHead className="text-right">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {linhasFiltradas.length === 0 && (
-                    <TableRow><TableCell colSpan={6} className="py-10 text-center text-muted-foreground">Nenhuma competência neste filtro</TableCell></TableRow>
-                  )}
-                  {linhasFiltradas.map((l) => {
-                    const isDev = l.kind === "devolucao";
-                    return (
-                      <TableRow key={l.key} className={`hover:bg-muted/40 ${isDev ? "bg-primary/[0.035]" : ""}`}>
-                        <TableCell className="font-medium capitalize">{isDev ? "Devolução" : mesNome(l.competencia)}</TableCell>
-                        <TableCell className="tabular-nums">{l.competencia.slice(0, 4)}</TableCell>
-                        <TableCell className="tabular-nums">{l.vencimento ? formatDate(l.vencimento) : "—"}</TableCell>
-                        <TableCell className="tabular-nums text-muted-foreground">{l.dataPagamento ? formatDate(l.dataPagamento) : "—"}</TableCell>
-                        <TableCell className="min-w-[120px]">
-                          <Money value={l.valor} className="text-sm font-semibold text-foreground" />
-                        </TableCell>
-                        <TableCell className="text-right">
+                        <div className="flex flex-col items-end gap-1.5 shrink-0">
+                          <Money value={l.valor} className="text-[15px] font-bold text-foreground" />
                           {isDev ? (
-                            <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                              <Banknote size={12} /> Devolução
+                            <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                              <Banknote size={11} /> Devolução
                             </span>
                           ) : (
                             <button
                               disabled={busy === l.cob!.id}
                               onClick={() => toggle(l.cob!)}
-                              className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
-                                l.status === "pago" ? "bg-success/15 text-success hover:bg-success/25" : "bg-destructive/15 text-destructive hover:bg-destructive/25"
+                              className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:opacity-50 ${
+                                l.status === "pago" ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"
                               }`}
                             >
-                              {l.status === "pago" ? <Check size={12} /> : <Undo2 size={12} className="rotate-180" />}
+                              {l.status === "pago" ? <Check size={11} /> : <Undo2 size={11} className="rotate-180" />}
                               {l.status === "pago" ? "Pago" : "Aberto"}
                             </button>
                           )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              {/* Desktop: tabela */}
+              <div className="hidden md:flex min-h-0 flex-1 flex-col">
+                <Table containerClassName="h-full overflow-y-auto">
+                  <TableHeader className="sticky top-0 z-20 bg-card/95 backdrop-blur">
+                    <TableRow className="border-b hover:bg-transparent">
+                      <TableHead className="w-[120px]">
+                        <Select value={mesFiltro} onValueChange={(v: string | null) => setMesFiltro(v === "__all__" ? "" : v ?? "")}>
+                          <SelectTrigger size="sm" className="h-7 w-[104px] border-0 px-1 font-medium shadow-none">
+                            <SelectValue placeholder="Mês" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="__all__">Todos os meses</SelectItem>
+                            {MESES.map((m) => <SelectItem key={m.v} value={m.v}>{m.l}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </TableHead>
+                      <TableHead className="w-[110px]">
+                        <Select value={anoFiltro} onValueChange={(v: string | null) => setAnoFiltro(v === "__all__" ? "" : v ?? "")}>
+                          <SelectTrigger size="sm" className="h-7 w-[94px] border-0 px-1 font-medium shadow-none">
+                            <SelectValue placeholder="Ano" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="__all__">Todos os anos</SelectItem>
+                            {anos.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </TableHead>
+                      <TableHead>Vencimento</TableHead>
+                      <TableHead>Data pagamento</TableHead>
+                      <TableHead className="text-right">Valor</TableHead>
+                      <TableHead className="text-right">Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {linhasFiltradas.length === 0 && (
+                      <TableRow><TableCell colSpan={6} className="py-10 text-center text-muted-foreground">Nenhuma competência neste filtro</TableCell></TableRow>
+                    )}
+                    {linhasFiltradas.map((l) => {
+                      const isDev = l.kind === "devolucao";
+                      return (
+                        <TableRow key={l.key} className={`hover:bg-muted/40 ${isDev ? "bg-primary/[0.035]" : ""}`}>
+                          <TableCell className="font-medium capitalize">{isDev ? "Devolução" : mesNome(l.competencia)}</TableCell>
+                          <TableCell className="tabular-nums">{l.competencia.slice(0, 4)}</TableCell>
+                          <TableCell className="tabular-nums">{l.vencimento ? formatDate(l.vencimento) : "—"}</TableCell>
+                          <TableCell className="tabular-nums text-muted-foreground">{l.dataPagamento ? formatDate(l.dataPagamento) : "—"}</TableCell>
+                          <TableCell className="min-w-[120px]">
+                            <Money value={l.valor} className="text-sm font-semibold text-foreground" />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {isDev ? (
+                              <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                                <Banknote size={12} /> Devolução
+                              </span>
+                            ) : (
+                              <button
+                                disabled={busy === l.cob!.id}
+                                onClick={() => toggle(l.cob!)}
+                                className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
+                                  l.status === "pago" ? "bg-success/15 text-success hover:bg-success/25" : "bg-destructive/15 text-destructive hover:bg-destructive/25"
+                                }`}
+                              >
+                                {l.status === "pago" ? <Check size={12} /> : <Undo2 size={12} className="rotate-180" />}
+                                {l.status === "pago" ? "Pago" : "Aberto"}
+                              </button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </>
   );
 }
 
